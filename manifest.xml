@@ -1,0 +1,16 @@
+<package>
+  <description brief="skeleton2youbot">
+
+     skeleton2youbot
+
+  </description>
+  <author>nando</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url></url>
+  <depend package="tf"/>
+  <depend package="youbot_driver"/>
+
+</package>
+
+
