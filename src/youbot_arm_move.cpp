@@ -9,16 +9,16 @@ using namespace std;
 
 #define PI 3.1415927
 
-#define A1_FOLD_RADIANS		0.11
-#define A1_UNFOLD_RADIANS 	2.56244
-#define A2_FOLD_RADIANS		0.11
-#define A2_UNFOLD_RADIANS 	1.04883
-#define A3_FOLD_RADIANS		-0.11
-#define A3_UNFOLD_RADIANS 	-2.43523
-#define A4_FOLD_RADIANS		0.110
-#define A4_UNFOLD_RADIANS 	1.73184
-#define A5_FOLD_RADIANS		0
-#define A5_UNFOLD_RADIANS 	PI/2
+#define A1_FOLD_RADIANS		0.100692
+#define A1_UNFOLD_RADIANS 	5.84014
+#define A2_FOLD_RADIANS		0.0100692
+#define A2_UNFOLD_RADIANS 	2.617
+#define A3_FOLD_RADIANS		-5.02655
+#define A3_UNFOLD_RADIANS 	-0.015708
+#define A4_FOLD_RADIANS		0.221239
+#define A4_UNFOLD_RADIANS 	3.4292
+#define A5_FOLD_RADIANS		0.110619
+#define A5_UNFOLD_RADIANS 	5.64159
 
 void posCallback(const skeleton2youbot::YouBotManipulatorJointAngles::ConstPtr& inAngles);
 
