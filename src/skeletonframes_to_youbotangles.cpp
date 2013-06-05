@@ -23,8 +23,7 @@ tfScalar getAngle(const tf::Vector3* inVector1, const tf::Vector3* inVector2) {
 		tfScalar theCosTheta = theScalarProd / (theM1 * theM2);
 		tfScalar theTheta = acos(theCosTheta);
 
-		//printf("Angle S-E-H: %g (|ES| = %g, |EH| = %g)\n",theta * 180 / PI,mES,mEH);
-		return 180*theTheta/PI;
+		return theTheta;
 
 	}
 
@@ -40,7 +39,7 @@ int main(int argc, char** argv){
 
 	tf::TransformListener theListener;
 
-	ros::Publisher thePublisher = theNodeHandle.advertise<skeleton2youbot::YouBotManipulatorJointAngles>("cmd_ref_vel",10); // Publicaremos en el canal 'cmd_pos_ref'. Buffer de 10 mensajes
+	ros::Publisher thePublisher = theNodeHandle.advertise<skeleton2youbot::YouBotManipulatorJointAngles>("cmd_ref_pos",10); // Publicaremos en el canal 'cmd_pos_ref'. Buffer de 10 mensajes
 
 	while (theNodeHandle.ok()){
 
@@ -81,7 +80,10 @@ int main(int argc, char** argv){
 			tfScalar theAngleShoulderHipKnee = getAngle(&theVectorHipShoulder,&theVectorHipKnee);
 			tfScalar theAngleHipKneeFoot = getAngle(&theVectorKneeHip,&theVectorKneeFoot);
 
-			printf("HES: %g, ESH: %g, SHK: %g, HKF: %g\n",theAngleHandElbowShoulder,theAngleElbowShoulderHip,theAngleShoulderHipKnee,theAngleHipKneeFoot);
+			printf("HES: %g, ESH: %g, SHK: %g, HKF: %g\n",theAngleHandElbowShoulder * 180 / PI
+														,theAngleElbowShoulderHip * 180 / PI
+														,theAngleShoulderHipKnee * 180 / PI
+														,theAngleHipKneeFoot * 180 / PI);
 
 			skeleton2youbot::YouBotManipulatorJointAngles theMsg;
 
