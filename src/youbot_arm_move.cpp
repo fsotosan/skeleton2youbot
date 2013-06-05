@@ -7,6 +7,19 @@
 using namespace youbot;
 using namespace std;
 
+#define PI 3.1415927
+
+#define A1_FOLD_RADIANS		0.11
+#define A1_UNFOLD_RADIANS 	2.56244
+#define A2_FOLD_RADIANS		0.11
+#define A2_UNFOLD_RADIANS 	1.04883
+#define A3_FOLD_RADIANS		-0.11
+#define A3_UNFOLD_RADIANS 	-2.43523
+#define A4_FOLD_RADIANS		0.110
+#define A4_UNFOLD_RADIANS 	1.73184
+#define A5_FOLD_RADIANS		0
+#define A5_UNFOLD_RADIANS 	PI/2
+
 void posCallback(const skeleton2youbot::YouBotManipulatorJointAngles::ConstPtr& inAngles);
 
 
@@ -17,13 +30,13 @@ ros::NodeHandle* myNodeHandle = 0;
 
 int main(int argc, char** argv) {
 
-	ros::init(argc, argv, "youbot_base_move");
+	ros::init(argc, argv, "youbot_arm_move");
 	ros::NodeHandle theNodeHandle;
 	myNodeHandle = &theNodeHandle;
 	ros::Subscriber theSubscriber = theNodeHandle.subscribe("cmd_ref_pos", 10, posCallback);
 
-	ROS_INFO("Programa youbot_manipulator_move iniciado");
-	//ROS_INFO("YOUBOT_CONFIGURATIONS_DIR: %s",YOUBOT_CONFIGURATIONS_DIR);
+	ROS_INFO("Programa youbot_arm_move iniciado");
+	ROS_INFO("YOUBOT_CONFIGURATIONS_DIR: %s",YOUBOT_CONFIGURATIONS_DIR);
 
 	try {
 		myYouBotArm = new YouBotManipulator("youbot-manipulator", YOUBOT_CONFIGURATIONS_DIR);
@@ -42,10 +55,41 @@ int main(int argc, char** argv) {
 
 }
 
+double translateRange(float inInput, float inMinInput, float inMaxInput, float inMinOutput, float inMaxOutput) {
+
+	if (inInput < inMinInput) {
+		inInput = inMinInput;
+	} else if (inInput > inMaxInput) {
+		inInput = inMaxInput;
+	}
+
+	return inMinOutput + (inInput - inMinInput)*(inMaxOutput - inMinOutput) / (inMaxInput - inMinInput);
+
+}
+
 void posCallback(const skeleton2youbot::YouBotManipulatorJointAngles::ConstPtr& inAngles) {
 
+	JointAngleSetpoint theJointAngle;
 
-	// Indicamos que se ha recibido un mensaje de velocidad
+
+	theJointAngle = translateRange(inAngles->A1, 0, PI, A1_FOLD_RADIANS, A1_UNFOLD_RADIANS) * radian;
+	myYouBotArm->getArmJoint(1).setData(theJointAngle);
+
+	/*
+	theJointAngle = translateRange(inAngles->A2, 0, PI, A2_FOLD_RADIANS, A2_UNFOLD_RADIANS) * radian;
+	myYouBotArm->getArmJoint(2).setData(theJointAngle);
+
+	theJointAngle = translateRange(inAngles->A3, 0, PI, A3_FOLD_RADIANS, A3_UNFOLD_RADIANS) * radian;
+	myYouBotArm->getArmJoint(3).setData(theJointAngle);
+
+	theJointAngle = translateRange(inAngles->A4, 0, PI, A4_FOLD_RADIANS, A4_UNFOLD_RADIANS) * radian;
+	myYouBotArm->getArmJoint(4).setData(theJointAngle);
+
+	theJointAngle = translateRange(inAngles->A5, 0, PI, A5_FOLD_RADIANS, A5_UNFOLD_RADIANS) * radian;
+	myYouBotArm->getArmJoint(5).setData(theJointAngle);
+	 */
+
+	// Indicamos que se ha recibido un mensaje de posición
 
 	ROS_INFO("%d - Recibido mensaje YouBotManipulatorJointAngles: A = (%g,%g,%g,%g,%g), \n", i++, inAngles->A1, inAngles->A2, inAngles->A3, inAngles->A4, inAngles->A5);
 
