@@ -8,7 +8,7 @@ using namespace youbot;
 using namespace std;
 
 #define PI 3.1415927
-
+/*
 #define A1_FOLD_RADIANS		0.100692
 #define A1_UNFOLD_RADIANS 	5.84014
 #define A2_FOLD_RADIANS		0.0100692
@@ -17,8 +17,19 @@ using namespace std;
 #define A3_UNFOLD_RADIANS 	-0.015708
 #define A4_FOLD_RADIANS		0.221239
 #define A4_UNFOLD_RADIANS 	3.4292
-#define A5_FOLD_RADIANS		0.110619
+#define A5_FOLD_RADIANS		0.11062
 #define A5_UNFOLD_RADIANS 	5.64159
+*/
+#define A1_FOLD_RADIANS		0.5
+#define A1_UNFOLD_RADIANS 	5.5
+#define A2_FOLD_RADIANS		0.5
+#define A2_UNFOLD_RADIANS 	2.0
+#define A3_FOLD_RADIANS		-4.0
+#define A3_UNFOLD_RADIANS 	-0.5
+#define A4_FOLD_RADIANS		0.5
+#define A4_UNFOLD_RADIANS 	3.0
+#define A5_FOLD_RADIANS		0.5
+#define A5_UNFOLD_RADIANS 	5.0
 
 void posCallback(const skeleton2youbot::YouBotManipulatorJointAngles::ConstPtr& inAngles);
 
@@ -75,10 +86,9 @@ void posCallback(const skeleton2youbot::YouBotManipulatorJointAngles::ConstPtr& 
 	theJointAngle = translateRange(inAngles->A1, 0, PI, A1_FOLD_RADIANS, A1_UNFOLD_RADIANS) * radian;
 	myYouBotArm->getArmJoint(1).setData(theJointAngle);
 
-	/*
+	
 	theJointAngle = translateRange(inAngles->A2, 0, PI, A2_FOLD_RADIANS, A2_UNFOLD_RADIANS) * radian;
 	myYouBotArm->getArmJoint(2).setData(theJointAngle);
-
 	theJointAngle = translateRange(inAngles->A3, 0, PI, A3_FOLD_RADIANS, A3_UNFOLD_RADIANS) * radian;
 	myYouBotArm->getArmJoint(3).setData(theJointAngle);
 
@@ -87,7 +97,6 @@ void posCallback(const skeleton2youbot::YouBotManipulatorJointAngles::ConstPtr& 
 
 	theJointAngle = translateRange(inAngles->A5, 0, PI, A5_FOLD_RADIANS, A5_UNFOLD_RADIANS) * radian;
 	myYouBotArm->getArmJoint(5).setData(theJointAngle);
-	 */
 
 	// Indicamos que se ha recibido un mensaje de posición
 
