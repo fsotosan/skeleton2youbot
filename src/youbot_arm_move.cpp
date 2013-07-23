@@ -3,6 +3,7 @@
 #include "youbot/YouBotManipulator.hpp"
 #include "ros/ros.h"
 #include <skeleton2youbot/YouBotManipulatorJointAngles.h>
+#include <sensor_msgs/LaserScan.h>
 
 using namespace youbot;
 using namespace std;
@@ -32,11 +33,14 @@ using namespace std;
 #define A5_UNFOLD_RADIANS 	5.0
 
 void posCallback(const skeleton2youbot::YouBotManipulatorJointAngles::ConstPtr& inAngles);
+void lidarCallback(const sensor_msgs::LaserScan::ConstPtr& inScanMsg);
 
 
 int i = 0;
 YouBotManipulator* myYouBotArm = 0;
+YouBotBase* myYouBotBase = 0;
 bool myYouBotHasArm = false;
+bool myYouBotHasBase = false;
 ros::NodeHandle* myNodeHandle = 0;
 
 int main(int argc, char** argv) {
@@ -44,7 +48,8 @@ int main(int argc, char** argv) {
 	ros::init(argc, argv, "youbot_arm_move");
 	ros::NodeHandle theNodeHandle;
 	myNodeHandle = &theNodeHandle;
-	ros::Subscriber theSubscriber = theNodeHandle.subscribe("cmd_ref_pos", 10, posCallback);
+	//ros::Subscriber theSubscriber = theNodeHandle.subscribe("cmd_ref_pos", 10, posCallback);
+	ros::Subscriber theBaseSubscriber = theNodeHandle.subscribe("scan", 10, lidarCallback);
 
 	ROS_INFO("Programa youbot_arm_move iniciado");
 	ROS_INFO("YOUBOT_CONFIGURATIONS_DIR: %s",YOUBOT_CONFIGURATIONS_DIR);
@@ -83,9 +88,8 @@ void posCallback(const skeleton2youbot::YouBotManipulatorJointAngles::ConstPtr& 
 	JointAngleSetpoint theJointAngle;
 
 
-	theJointAngle = translateRange(inAngles->A1, 0, PI, A1_FOLD_RADIANS, A1_UNFOLD_RADIANS) * radian;
-	myYouBotArm->getArmJoint(1).setData(theJointAngle);
-
+	//theJointAngle = translateRange(inAngles->A1, 0, PI, A1_FOLD_RADIANS, A1_UNFOLD_RADIANS) * radian;
+	//myYouBotArm->getArmJoint(1).setData(theJointAngle);
 	
 	theJointAngle = translateRange(inAngles->A2, 0, PI, A2_FOLD_RADIANS, A2_UNFOLD_RADIANS) * radian;
 	myYouBotArm->getArmJoint(2).setData(theJointAngle);
@@ -101,6 +105,42 @@ void posCallback(const skeleton2youbot::YouBotManipulatorJointAngles::ConstPtr& 
 	// Indicamos que se ha recibido un mensaje de posición
 
 	ROS_INFO("%d - Recibido mensaje YouBotManipulatorJointAngles: A = (%g,%g,%g,%g,%g), \n", i++, inAngles->A1, inAngles->A2, inAngles->A3, inAngles->A4, inAngles->A5);
+
+
+}
+
+void lidarCallback(const sensor_msgs::LaserScan::ConstPtr& inScanMsg) {
+
+	JointAngleSetpoint theJointAngle;
+
+	int i;
+
+	float theRangeMin = inScanMsg->range_min;
+	float theRangeMax = inScanMsg->range_max;
+	float theAngleMin = inScanMsg->angle_min;
+	float theAngleMax = inScanMsg->angle_max;
+	float theAngleIncrement = inScanMsg->angle_increment;
+
+	double theClosestPointAngle = theAngleMin;
+	float theClosestPointRange = theRangeMax;
+
+	int theNumDirections = (int)(theAngleMax - theAngleMin)/theAngleIncrement;
+	for(i = 0; i < theNumDirections; i++) {
+		if ((inScanMsg->ranges[i] >= theRangeMin)&&(inScanMsg->ranges[i] <= theRangeMax)) {
+			if (inScanMsg->ranges[i] < theClosestPointRange) {
+				theClosestPointAngle = theAngleMin + i*theAngleIncrement;
+				theClosestPointRange = inScanMsg->ranges[i];
+			}
+		}
+	}
+
+	theClosestPointAngle -= PI/2;
+
+	theJointAngle =  theClosestPointAngle * radian;
+	myYouBotArm->getArmJoint(1).setData(theJointAngle);
+
+
+	ROS_INFO("%d - Recibido mensaje LaserScan con objeto más cercano a  %g grados (%g m)\n", i++, theClosestPointAngle, theClosestPointRange);
 
 
 }
