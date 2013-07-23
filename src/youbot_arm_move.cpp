@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 	ros::init(argc, argv, "youbot_arm_move");
 	ros::NodeHandle theNodeHandle;
 	myNodeHandle = &theNodeHandle;
-	//ros::Subscriber theSubscriber = theNodeHandle.subscribe("cmd_ref_pos", 10, posCallback);
+	ros::Subscriber theSubscriber = theNodeHandle.subscribe("cmd_ref_pos", 10, posCallback);
 	ros::Subscriber theBaseSubscriber = theNodeHandle.subscribe("scan", 10, lidarCallback);
 
 	ROS_INFO("Programa youbot_arm_move iniciado");
@@ -134,7 +134,6 @@ void lidarCallback(const sensor_msgs::LaserScan::ConstPtr& inScanMsg) {
 		}
 	}
 
-	theClosestPointAngle -= PI/2;
 
 	theJointAngle = translateRange(theClosestPointAngle, 0, PI, A1_FOLD_RADIANS, A1_UNFOLD_RADIANS) * radian;
 	myYouBotArm->getArmJoint(1).setData(theJointAngle);
