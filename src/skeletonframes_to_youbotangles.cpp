@@ -87,10 +87,10 @@ int main(int argc, char** argv){
 
 			skeleton2youbot::YouBotManipulatorJointAngles theMsg;
 
-			theMsg.A1 = theAngleHandElbowShoulder;
-			theMsg.A2 = theAngleElbowShoulderHip;
-			theMsg.A3 = theAngleShoulderHipKnee;
-			theMsg.A4 = theAngleHipKneeFoot;
+			theMsg.A2 = theAngleHandElbowShoulder;
+			theMsg.A3 = theAngleElbowShoulderHip;
+			theMsg.A4 = theAngleShoulderHipKnee;
+			theMsg.A5 = theAngleHipKneeFoot;
 
 			thePublisher.publish(theMsg);
 
