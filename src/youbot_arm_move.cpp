@@ -136,7 +136,7 @@ void lidarCallback(const sensor_msgs::LaserScan::ConstPtr& inScanMsg) {
 
 	theClosestPointAngle -= PI/2;
 
-	theJointAngle =  theClosestPointAngle * radian;
+	theJointAngle = translateRange(theClosestPointAngle, 0, PI, A1_FOLD_RADIANS, A1_UNFOLD_RADIANS) * radian;
 	myYouBotArm->getArmJoint(1).setData(theJointAngle);
 
 
