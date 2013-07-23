@@ -140,7 +140,7 @@ void lidarCallback(const sensor_msgs::LaserScan::ConstPtr& inScanMsg) {
 	myYouBotArm->getArmJoint(1).setData(theJointAngle);
 
 
-	ROS_INFO("%d - Recibido mensaje LaserScan con objeto más cercano a  %g grados (%g m)\n", i++, theClosestPointAngle, theClosestPointRange);
+	ROS_INFO("%d - Recibido mensaje LaserScan con objeto más cercano a  %g grados (%g m)\n", i++, theClosestPointAngle*180/PI, theClosestPointRange);
 
 
 }
